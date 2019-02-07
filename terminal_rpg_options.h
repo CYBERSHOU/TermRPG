@@ -22,8 +22,8 @@ int controls();
 int options();
 int options_handling();
 int options_write();
-signed int quit();
-signed int quit_handling(signed int highlight);
-signed int quit_write(const signed int highlight);
+int quit();
+int quit_handling(int highlight);
+int quit_write(const int highlight);
 
 #endif /* ifndef  TERMINAL_RPG_OPTIONS */

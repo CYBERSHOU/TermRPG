@@ -36,6 +36,7 @@ char * options_msg [] =  {
                             "OPTIONS",
                             "- MUSIC VOLUME - ",
                         };
+
 char * options_music_volume [] =  {
                                 "<",
                                 "[",
@@ -83,8 +84,8 @@ int options() {
     return 0;
 }
 
-signed int quit() {
-    signed int highlight = quit_handling(0);
+int quit() {
+    int highlight = quit_handling(0);
     if( highlight == 0)
         return 0;
     if( highlight == 1)
@@ -97,7 +98,7 @@ signed int quit() {
         return -1;
 }
 
-signed int quit_handling (signed int highlight) {
+int quit_handling (int highlight) {
 
     while(1) {
         int c;
@@ -124,7 +125,7 @@ signed int quit_handling (signed int highlight) {
     return -1;
 }
 
-int quit_write(const signed int highlight) {
+int quit_write(const int highlight) {
     clear();
     int row, col;
     getmaxyx(stdscr, row, col);
