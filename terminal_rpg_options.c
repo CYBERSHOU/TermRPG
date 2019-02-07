@@ -45,7 +45,7 @@ char * options_music_volume [] =  {
                                 "]",
                                 ">"
                             };
-//Options - Variables
+//OPTIONS - Variables
 int music_volume = 10;
 
 //QUIT - Strings
