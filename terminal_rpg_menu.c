@@ -20,14 +20,11 @@
 #include <string.h>
 
 #include "terminal_rpg_menu.h"
+#include "terminal_rpg_window_size.h"
 
-const char* display_error = "Display Error !!!";
 
-const char* display_error_size = "Your Display is";
-
-int menu_handling (int argc, const char * argv[]) {
+int menu_handling (int argc, const char * argv[], int highlight) {
     int c;
-    int highlight = 1;
     while(1) {
         if(write_menu(argc, argv, highlight) == 1)
             return -2;
@@ -55,19 +52,14 @@ int menu_handling (int argc, const char * argv[]) {
     return -1;
 }
 
-int write_menu(int argc, const char * argv[], int highlight) {
+int write_menu (int argc, const char * argv[], int highlight) {
     int row, col;
     getmaxyx(stdscr, row, col);
     int dif = 1 + ((row / argc) / 2);
     int row_menu = row * 0.25;
     clear();
-
-    if( row < 25 || col < 80 )  {
-        mvprintw(row * 0.5, (col * 0.5) - (strlen(display_error) / 2), "%s", display_error, row, col);
-        mvprintw((row * 0.5) + 1, (col * 0.5) - (strlen(display_error_size) + 7) / 2, "%s %dx%d.", display_error_size, col, row );
-        refresh();
+    if( window_size_check(row, col, 25, 80) == 1)
         return 1;
-    }
 
     for(int i = 0; i < argc; i++) {
         if(highlight == i + 1) {

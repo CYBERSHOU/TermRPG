@@ -23,7 +23,7 @@
 #include "terminal_rpg_start.h"
 
 
-int start() {
+int start () {
 
     return 0;
 }

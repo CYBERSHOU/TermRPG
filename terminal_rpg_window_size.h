@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  terminal_rpg_start.h
+ *       Filename:  terminal_rpg_window_size.h
  *
  *    Description:
  *
  *        Version:  1.0
- *        Created:  02/05/2019 06:24:59 PM
+ *        Created:  02/07/2019 06:23:51 PM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,11 +15,9 @@
  *
  * =====================================================================================
  */
+#ifndef TERMINAL_RPG_WINDOW_SIZE
+#define TERMINAL_RPG_WINDOW_SIZE
 
-#ifndef TERMINAL_RPG_START
-#define TERMINAL_RPG_START
+int window_size_check(int row, int col, int min_row, int min_col);
 
-
-int start ();
-
-#endif /* ifndef TERMINAL_RPG_START */
+#endif /* ifndef TERMINAL_RPG_WINDOW_SIZE */

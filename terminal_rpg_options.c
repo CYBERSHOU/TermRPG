@@ -20,6 +20,7 @@
 #include <ncurses.h>
 
 #include "terminal_rpg_options.h"
+#include "terminal_rpg_window_size.h"
 
 //CONTROLS - Strings
 char * controls_msg [] =    {
@@ -30,22 +31,30 @@ char * controls_msg [] =    {
                                 "- OTHER STUFF",
                                 "Press any key to return."
                             };
+//CONTROLS - Variables
+int controls_msg_size = 6;
 
 //OPTIONS - Strings
 char * options_msg [] =  {
                             "OPTIONS",
-                            "- MUSIC VOLUME - ",
+                            "- MUSIC VOLUME -",
+                            "- Return -",
                         };
 
 char * options_music_volume [] =  {
                                 "<",
+                                " ",
                                 "[",
-                                "|", // 10 of these for 100% / music_volume = 10; [2]
+                                "!", // 10 of these for 100% / music_volume = 10; [2]
                                 ".", // or 10 of these for 0% / music_volume = 0; [3]
                                 "]",
+                                " ",
                                 ">"
                             };
+
 //OPTIONS - Variables
+int options_msg_size = 3;
+int options_music_volume_size = 8;
 int music_volume = 10;
 
 //QUIT - Strings
@@ -53,17 +62,17 @@ char * quit_msg = "Do you really want to quit?";
 
 char * error_msg = "An error occurred !!! - quit() returned -1 ";
 
-char * quit_choice[] =  {
+char * quit_choice [] =  {
                             "YES",
                             "NO"
                         };
 
-int controls() {
+int controls () {
     int row, col;
     getmaxyx(stdscr, row, col);
     clear();
     mvprintw((row / 4), (col - strlen(controls_msg[0])) / 2, "%s", controls_msg[0]); //title
-    for(int i = 1; i < 6; i++){
+    for(int i = 1; i < controls_msg_size; i++){
         mvprintw((row / 4) + 2 + i, (col - strlen(controls_msg[i])) / 2, "%s", controls_msg[i]);
     }
     refresh();
@@ -71,20 +80,167 @@ int controls() {
     return 0;
 }
 
-int options() {
-    int row, col;
-    getmaxyx(stdscr, row, col);
-    clear();
-    mvprintw((row / 4), (col - strlen(options_msg[0])) / 2, "%s", options_msg[0]); //title
-    for(int i = 1; i < 2; i++){
-        mvprintw((row / 4) + 2 + i, (col - strlen(options_msg[i])) / 2, "%s", options_msg[i]);
+int options () {
+
+    while(1) {
+        int c = options_handling(options_msg_size, 1);
+        switch(c) {
+            case 1:
+                // first arg is the starting highlight inside the function, second is equal to the switch case;
+                options_handling_music(options_msg_size, 0, 1);
+                break;
+            case 2:
+                return 0;
+                break;
+            default:
+                break;
+        }
     }
-    refresh();
-    getch();
     return 0;
 }
 
-int quit() {
+int options_handling (int argc, int highlight) {
+
+    while(1) {
+        if(options_write(argc, highlight) == 1)
+            continue;
+        int c = getch();
+        switch(c) {
+            case KEY_UP:
+                if(highlight == 1)
+                    highlight = argc - 1;
+                else
+                    highlight--;
+                break;
+            case KEY_DOWN:
+                if(highlight == argc - 1)
+                    highlight = 1;
+                else
+                    highlight++;
+                break;
+            case 10:
+                return highlight;
+            default:
+                break;
+        }
+    }
+
+    return -1;
+}
+
+int options_handling_music (int argc, int highlight, int option) {
+
+    while(1) {
+        options_write_music(argc, highlight, option);
+        int c = getch();
+        switch(c) {
+            case KEY_LEFT:
+                if(highlight == 0)
+                    highlight = 1;
+                else
+                    highlight = 0;
+                break;
+            case KEY_RIGHT:
+                if(highlight == 1)
+                    highlight = 0;
+                else
+                    highlight = 1;
+                break;
+            case 10:
+                if(highlight == 0 && music_volume > 0)
+                    music_volume--;
+                if(highlight == 1 && music_volume < 10)
+                    music_volume++;
+                break;
+            case 127:
+                return 0;
+            default:
+                break;
+        }
+    }
+
+    return -1;
+}
+
+int options_write (int argc, const int highlight) {
+    int row, col;
+    getmaxyx(stdscr, row, col);
+    if(window_size_check(row, col, 25, 80) == 1) {
+        return 1;
+    }
+    clear();
+    mvprintw((row / 4), (col - strlen(options_msg[0])) / 2, "%s", options_msg[0]); //title
+    for(int i = 1; i < argc; i++){
+        int size_ = strlen(options_msg[i]);
+        if(highlight == i) {
+            attron(A_REVERSE);
+            mvprintw((row / 4) + 2 + i, (col - size_) / 3, "%s", options_msg[i]);
+            attroff(A_REVERSE);
+        }
+        else
+            mvprintw((row / 4) + 2 + i, (col - size_) / 3, "%s", options_msg[i]);
+        if(i == 1)
+            options_write_music_volume(2, row, col);
+    }
+    return 0;
+}
+
+int options_write_music (int argc, const int highlight, int option) {
+    int row, col;
+    getmaxyx(stdscr, row, col);
+    if(window_size_check(row, col, 25, 80) == 1) {
+        return 1;
+    }
+    clear();
+    mvprintw((row / 4), (col - strlen(options_msg[0])) / 2, "%s", options_msg[0]); //title
+    for(int i = 1; i < argc; i++){
+        int size_ = strlen(options_msg[i]);
+        mvprintw((row / 4) + 2 + i, (col - size_) / 3, "%s", options_msg[i]);
+    }
+    if(highlight == 0) {
+        options_write_music_volume(0, row, col);
+    }
+    else {
+        options_write_music_volume(1, row, col);
+    }
+    return 0;
+}
+
+int options_write_music_volume (const int highlight, int row, int col) {
+    mvprintw((row / 4) + 3, col / 2, "  ");
+    for(int i = 0; i < options_music_volume_size; i++) {
+
+        if(highlight == 0 && i == 0) {
+            attron(A_REVERSE);
+            printw("%s", options_music_volume[i]);
+            attroff(A_REVERSE);
+            continue;
+        }
+        if(highlight == 1 && i == options_music_volume_size - 1) {
+            attron(A_REVERSE);
+            printw("%s", options_music_volume[i]);
+            attroff(A_REVERSE);
+            continue;
+        }
+        if(i == (options_music_volume_size / 2) - 1)  {
+            for(int c = 0; c < music_volume; c++) {
+                printw("%s", options_music_volume[i]);
+            }
+            continue;
+        }
+        if(i == (options_music_volume_size / 2) ) {
+            for(int c = 10; c > music_volume; c--) {
+                printw("%s", options_music_volume[i]);
+            }
+            continue;
+        }
+
+        printw("%s", options_music_volume[i]);
+    }
+    return 0;
+}
+
+int quit () {
     int highlight = quit_handling(0);
     if( highlight == 0)
         return 0;
@@ -125,7 +281,7 @@ int quit_handling (int highlight) {
     return -1;
 }
 
-int quit_write(const int highlight) {
+int quit_write (const int highlight) {
     clear();
     int row, col;
     getmaxyx(stdscr, row, col);

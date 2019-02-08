@@ -26,7 +26,7 @@
 #include "terminal_rpg_menu.h"
 
 
-const char * menu_word[] =  {
+const char * menu_word [] =  {
                                 "Start",
                                 "Controls",
                                 "Options",
@@ -36,12 +36,15 @@ const char * menu_word[] =  {
 
 
 int terminal_rpg_menu () {
-    signed int q;
+    int q;
+    int option = 1;
     while(1) {
-        int option = menu_handling(4, menu_word);
+        if(option == -2)
+            option = 1;
+        option = menu_handling(4, menu_word, option);
         switch(option) {
             case -2:
-                mvprintw(0,0, "Window size not enough! Recomended size is 80x25.");
+                mvprintw(0,0, "Change window size to proceed.");
                 getch();
                 break;
             case 1:

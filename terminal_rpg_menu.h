@@ -20,7 +20,7 @@
 #define TERMINAL_RPG_MENU
 
 
-int menu_handling (int argc, const char * argv[]);
+int menu_handling (int argc, const char * argv[], int highlight);
 int write_menu (int argc, const char * argv[], int highlight);
 
 

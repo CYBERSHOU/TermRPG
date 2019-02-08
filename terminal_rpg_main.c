@@ -22,17 +22,23 @@
 #include "terminal_rpg.h"
 
 
-int main(int argc, char *argv[]) {
+int main (int argc, char *argv[]) {
 
     initscr();
     keypad(stdscr, TRUE);
     noecho();
     curs_set(0);
 
+    /* while(1) { */
+    /* int c = getch(); */
+    /* printw("%d,", c); */
+    /* } */
+    /* getch(); */
+
     terminal_rpg_menu();
 
     clear();
-    printw("Quitting...");
+    printw("Terminating...");
     refresh();
     sleep(1);
     endwin();
