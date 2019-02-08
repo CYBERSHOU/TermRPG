@@ -27,8 +27,8 @@ char * controls_msg [] =    {
                                 "CONTROLS",
                                 "- ARROWS : For movement and selection like usual;",
                                 "- ENTER : To confirm selection and interact;",
-                                "- M : To show the map;",
-                                "- OTHER STUFF",
+                                "- BACKSPACE : To return, when option is not available;",
+                                "- M : To show the map (just a placeholder);",
                                 "Press any key to return."
                             };
 //CONTROLS - Variables
@@ -73,7 +73,10 @@ int controls () {
     clear();
     mvprintw((row / 4), (col - strlen(controls_msg[0])) / 2, "%s", controls_msg[0]); //title
     for(int i = 1; i < controls_msg_size; i++){
-        mvprintw((row / 4) + 2 + i, (col - strlen(controls_msg[i])) / 2, "%s", controls_msg[i]);
+        if(i == controls_msg_size - 1 )
+            mvprintw((row / 4) + 2 + i, (col - strlen(controls_msg[i])) / 2, "%s", controls_msg[i]);
+        else
+            mvprintw((row / 4) + 2 + i, (col / 4) - 2, "%s", controls_msg[i]);
     }
     refresh();
     getch();
