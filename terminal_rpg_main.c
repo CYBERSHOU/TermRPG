@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <unistd.h>
+#include <pulse/pulseaudio.h>
 
 #include "terminal_rpg.h"
 
@@ -29,16 +30,11 @@ int main (int argc, char *argv[]) {
     noecho();
     curs_set(0);
 
-    /* while(1) { */
-    /* int c = getch(); */
-    /* printw("%d,", c); */
-    /* } */
-    /* getch(); */
+    // system("mplayer -shuffle -loop 0 ~/Documents/project_terminal_rpg/GIT/TermRPG/audio_tracks/*.mp3 &> audio_tracks/log.txt & -- ");
 
     terminal_rpg_menu();
-
     clear();
-    printw("Terminating...");
+    printw("Exiting...");
     refresh();
     sleep(1);
     endwin();

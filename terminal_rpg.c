@@ -17,8 +17,7 @@
  */
 
 #include <ncurses.h>
-#include <stdio.h>
-//#include <unistd.h>
+#include <stdlib.h>
 
 #include "terminal_rpg.h"
 #include "terminal_rpg_start.h"
@@ -38,6 +37,7 @@ const char * menu_word [] =  {
 int terminal_rpg_menu () {
     int q;
     int option = 1;
+    options_def_longest_str(); //defines which element of options is the longest string.
     while(1) {
         if(option == -2)
             option = 1;

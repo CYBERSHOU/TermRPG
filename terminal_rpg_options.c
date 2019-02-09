@@ -54,6 +54,7 @@ char * options_music_volume [] =  {
 
 //OPTIONS - Variables
 int options_msg_size = 3;
+int options_longest_str = 0;
 int options_music_volume_size = 8;
 int music_volume = 10;
 
@@ -72,11 +73,16 @@ int controls () {
     getmaxyx(stdscr, row, col);
     clear();
     mvprintw((row / 4), (col - strlen(controls_msg[0])) / 2, "%s", controls_msg[0]); //title
+    int longest_str = 0;
+    for (int i = 1; i < controls_msg_size; i++) {
+        if(strlen(controls_msg[i]) > longest_str)
+            longest_str = strlen(controls_msg[i]);
+    }
     for(int i = 1; i < controls_msg_size; i++){
         if(i == controls_msg_size - 1 )
             mvprintw((row / 4) + 2 + i, (col - strlen(controls_msg[i])) / 2, "%s", controls_msg[i]);
         else
-            mvprintw((row / 4) + 2 + i, (col / 4) - 2, "%s", controls_msg[i]);
+            mvprintw((row / 4) + 2 + i, (col - longest_str) / 2, "%s", controls_msg[i]);
     }
     refresh();
     getch();
@@ -99,6 +105,15 @@ int options () {
                 break;
         }
     }
+    return 0;
+}
+
+int options_def_longest_str () {
+    for(int i = 1; i < options_msg_size; i++) {
+        if(strlen(options_msg[i]) > options_longest_str)
+            options_longest_str = strlen(options_msg[i]);
+    }
+
     return 0;
 }
 
@@ -174,14 +189,13 @@ int options_write (int argc, const int highlight) {
     clear();
     mvprintw((row / 4), (col - strlen(options_msg[0])) / 2, "%s", options_msg[0]); //title
     for(int i = 1; i < argc; i++){
-        int size_ = strlen(options_msg[i]);
         if(highlight == i) {
             attron(A_REVERSE);
-            mvprintw((row / 4) + 2 + i, (col - size_) / 3, "%s", options_msg[i]);
+            mvprintw((row / 4) + 2 + i, (col - options_longest_str) / 3, "%s", options_msg[i]);
             attroff(A_REVERSE);
         }
         else
-            mvprintw((row / 4) + 2 + i, (col - size_) / 3, "%s", options_msg[i]);
+            mvprintw((row / 4) + 2 + i, (col - options_longest_str) / 3, "%s", options_msg[i]);
         if(i == 1)
             options_write_music_volume(2, row, col);
     }
@@ -197,8 +211,7 @@ int options_write_music (int argc, const int highlight, int option) {
     clear();
     mvprintw((row / 4), (col - strlen(options_msg[0])) / 2, "%s", options_msg[0]); //title
     for(int i = 1; i < argc; i++){
-        int size_ = strlen(options_msg[i]);
-        mvprintw((row / 4) + 2 + i, (col - size_) / 3, "%s", options_msg[i]);
+        mvprintw((row / 4) + 2 + i, (col - options_longest_str) / 3, "%s", options_msg[i]);
     }
     if(highlight == 0) {
         options_write_music_volume(0, row, col);
