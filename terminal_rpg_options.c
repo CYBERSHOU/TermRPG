@@ -80,7 +80,7 @@ int controls () {
     }
     for(int i = 1; i < controls_msg_size; i++){
         if(i == controls_msg_size - 1 )
-            mvprintw((row / 4) + 2 + i, (col - strlen(controls_msg[i])) / 2, "%s", controls_msg[i]);
+            mvprintw((row / 4) + 3 + i, (col - strlen(controls_msg[i])) / 2, "%s", controls_msg[i]);
         else
             mvprintw((row / 4) + 2 + i, (col - longest_str) / 2, "%s", controls_msg[i]);
     }
