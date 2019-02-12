@@ -14,3 +14,8 @@ style, you can play directly from your terminal.
 'Controls' and 'Options' aren't fully completed (more options
 to had in the future).
 
+- Background music added through the mplayer program (required for it to work
+or you can change the line in terminal_rpg_main.c where mplayer is mentioned).
+Still experimental and I'm trying to figure out a way to reduce and increase it
+from within the game's options.
+
