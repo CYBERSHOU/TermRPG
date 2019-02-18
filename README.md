@@ -11,11 +11,9 @@ style, you can play directly from your terminal.
 - At moment the game is still unplayable.
 
 - All menu options but 'Start' are now fully interactable, but
-'Controls' and 'Options' aren't fully completed (more options
-to had in the future).
+'Controls' and 'Options' aren't fully completed (more options to had in the
+future).
 
-- Background music added through the mplayer program (required for it to work
-or you can change the line in terminal_rpg_main.c where mplayer is mentioned).
-Still experimental and I'm trying to figure out a way to reduce and increase it
-from within the game's options.
-
+- Background music added through the mplayer program and is working as desired
+(mplayer is required for it to work or you can change the line in
+terminal_rpg_music.c where mplayer is mentioned).
