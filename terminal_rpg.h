@@ -19,8 +19,6 @@
 #ifndef TERMINAL_RPG
 #define TERMINAL_RPG
 
-
 int terminal_rpg_menu ();
-
 
 #endif /* ifndef TERMINAL_RPG */

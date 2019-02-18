@@ -21,6 +21,7 @@
 
 #include "terminal_rpg_options.h"
 #include "terminal_rpg_window_size.h"
+#include "terminal_rpg_music.h"
 
 //CONTROLS - Strings
 char * controls_msg [] =    {
@@ -56,7 +57,6 @@ char * options_music_volume [] =  {
 int options_msg_size = 3;
 int options_longest_str = 0;
 int options_music_volume_size = 8;
-int music_volume = 10;
 
 //QUIT - Strings
 char * quit_msg = "Do you really want to quit?";
@@ -147,7 +147,7 @@ int options_handling (int argc, int highlight) {
 }
 
 int options_handling_music (int argc, int highlight, int option) {
-
+    int music_volume = music_return_music_volume();
     while(1) {
         options_write_music(argc, highlight, option);
         int c = getch();
@@ -165,10 +165,14 @@ int options_handling_music (int argc, int highlight, int option) {
                     highlight = 1;
                 break;
             case 10:
-                if(highlight == 0 && music_volume > 0)
+                if(highlight == 0 && music_volume > 0) {
                     music_volume--;
-                if(highlight == 1 && music_volume < 10)
+                    music_dec_music_volume();
+                }
+                if(highlight == 1 && music_volume < 10) {
                     music_volume++;
+                    music_inc_music_volume();
+                }
                 break;
             case 127:
                 return 0;
@@ -223,6 +227,7 @@ int options_write_music (int argc, const int highlight, int option) {
 }
 
 int options_write_music_volume (const int highlight, int row, int col) {
+    int music_volume = music_return_music_volume();
     mvprintw((row / 4) + 3, col / 2, "  ");
     for(int i = 0; i < options_music_volume_size; i++) {
 

@@ -19,7 +19,6 @@
 #ifndef TERMINAL_RPG_START
 #define TERMINAL_RPG_START
 
-
 int start ();
 
 #endif /* ifndef TERMINAL_RPG_START */
