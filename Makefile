@@ -1,30 +1,41 @@
-CMP = gcc
-OPT = -Wall -lncurses
+CC = gcc
+CCF = -Wall -lncurses
 
 MAIN = terminal_rpg_main
 FILE = terminal_rpg
 MENU = terminal_rpg_menu
 START = terminal_rpg_start
-OPTIONS = terminal_rpg_options
-WINSIZE = terminal_rpg_window_size
+OPTIO = terminal_rpg_options
+WINSZ = terminal_rpg_window_size
 MUSIC = terminal_rpg_music
-AUDIO_LOG = audio_tracks/log.txt
+A_LOG = audio_tracks/log.txt
 
-DEBUG = debug
+#Only for debug purposes.
+DEBUG = debug/debug
 
-all: file
-	$(CMP) $(OPT) $(FILE).o $(MENU).o $(START).o $(OPTIONS).o $(WINSIZE).o \
-	$(MUSIC).o $(DEBUG).o $(MAIN).c -o $(MAIN).exe
+.PHONY: clean debug debug_clean debug_make
 
-file: dependencies
-	$(CMP) $(FILE).c -c $(OPT)
-
-dependencies:
-	$(CMP) $(MENU).c $(START).c $(OPTIONS).c $(WINSIZE).c $(MUSIC).c $(DEBUG).c -c $(OPT)
+all: files
+	$(CC) $(CCF) $(FILE).o $(MENU).o $(START).o $(OPTIO).o $(WINSZ).o \
+	$(MUSIC).o $(MAIN).c -o $(MAIN).exe
 
 run: all
 	./$(MAIN).exe
 
-clean:
-	rm *.o $(MAIN).exe $(AUDIO_LOG)
+files:
+	$(CC) $(FILE).c $(MENU).c $(START).c $(OPTIO).c $(WINSZ).c $(MUSIC).c -c $(CCF)
 
+clean:
+	rm -vf *.o $(MAIN).exe $(A_LOG)
+
+debug: debug_make files
+	$(CC) $(CCF) $(FILE).o $(MENU).o $(START).o $(OPTIO).o $(WINSZ).o \
+	$(MUSIC).o $(DEBUG).o $(MAIN).c -o $(MAIN).exe
+
+debug_make:
+	cd debug/ ; make
+
+debug_clean: clean
+	cd debug/ ; make clean
+
+#EOF
