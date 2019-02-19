@@ -15,8 +15,10 @@
  *
  * =====================================================================================
  */
+
 #ifndef TERMINAL_RPG_MUSIC
 #define TERMINAL_RPG_MUSIC
+
 
 void music_inc_music_volume ();
 void music_dec_music_volume ();
@@ -26,5 +28,6 @@ int music_quit_mplayer ();
 int music_write_m_volume (const char * filename);
 int music_read_m_volume (const char * filename);
 int music_return_music_volume ();
+
 
 #endif /* ifndef TERMINAL_RPG_MUSIC */

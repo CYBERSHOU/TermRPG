@@ -21,7 +21,7 @@
 int controls ();
 
 int options ();
-int options_def_longest_str();
+int options_def_longest_str ();
 int options_handling (int argc, int highlight);
 int options_handling_music (int argc, int highlight, int option);
 int options_write (int argc, const int highlight);

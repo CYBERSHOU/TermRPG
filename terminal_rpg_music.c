@@ -22,24 +22,29 @@
 
 #include "terminal_rpg_music.h"
 
+
 int music_volume = 10; //0-10, 0 = 0%, 5 = 50%, 10 = 100%, volume increases and decreases by 10%.
 
 const char * fifo = "/tmp/mplayercontrol";
 const char * audio_tracks = "audio_tracks/*.mp3";
 const char * log_file = "audio_tracks/log.txt";
 
-const char * mkfifo = "mkfifo %s &> %s"; //first is fifo and then log_file;
-const char * mplayer = "mplayer -slave -input file=%s -softvol -volstep 10 -volume %d -loop 0 %s &>> %s &"; //first fifo, then (music_volume * 10), audio_tracks and log_file;
-const char * volume_dec = "echo 'volume -1 0' >> %s"; //%s is fifo for each.
+//Using mkfifo to create a file onto which to echo commands to mplayer;
+const char * mkfifo = "mkfifo %s &> %s"; //First (%s) is 'fifo' and second is 'log_file';
+//First (%s) is 'fifo', then (%d) is '(music_volume * 10)', the last two (%s) are 'audio_tracks' and 'log_file';
+const char * mplayer = "mplayer -slave -input file=%s -softvol -volstep 10 -volume %d -loop 0 %s &>> %s &";
+const char * volume_dec = "echo 'volume -1 0' >> %s"; //(%s) is 'fifo' for each.
 const char * volume_inc = "echo 'volume 1 0' >> %s";
 const char * quit_mplayer = "echo 'quit 0' >> %s";
+
+const char * error_closing_file = "There was an error closing the file %s !!!";
+
 
 void music_inc_music_volume () {
     music_volume++;
     char temp [128];
     sprintf(temp, volume_inc, fifo);
     system(temp);
-    return;
 }
 
 void music_dec_music_volume () {
@@ -47,7 +52,6 @@ void music_dec_music_volume () {
     char temp [128];
     sprintf(temp, volume_dec, fifo);
     system(temp);
-    return;
 }
 
 int music_set_mplayer () {
@@ -55,7 +59,7 @@ int music_set_mplayer () {
         music_volume = 10;
 
     if(music_volume == -2) {
-        mvprintw(0,0, "There was an error closing the file %s !!!", log_file);
+        mvprintw(0,0, error_closing_file, log_file);
         getch();
     }
 
@@ -83,7 +87,7 @@ int music_write_m_volume (const char * filename) {
     fs = fopen(filename, "w");
     fprintf(fs, "%d\n", music_volume);
     if(fclose(fs) == EOF) {
-        mvprintw(0,0, "There was an error closing the file %s !!!", log_file);
+        mvprintw(0,0, error_closing_file, log_file);
         getch();
     }
     return 0;
