@@ -19,6 +19,10 @@
 #ifndef TERMINAL_RPG_START
 #define TERMINAL_RPG_START
 
-int start ();
+int start (void);
+
+int new_game();
+int continue_game();
+int load_game();
 
 #endif /* ifndef TERMINAL_RPG_START */

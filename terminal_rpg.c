@@ -31,7 +31,7 @@ const char * menu_word [] =  {
                                 "Options",
                                 "Quit"
                             };
-
+const int menu_size = 4;
 
 int terminal_rpg_menu () {
     int q; //holds quit() function's result;
@@ -41,7 +41,7 @@ int terminal_rpg_menu () {
     while(1) {
         if(option == -2)
             option = 1;
-        option = menu_handling(4, menu_word, option);
+        option = menu_handling(menu_size, menu_word, option);
         switch(option) {
             case -2:
                 mvprintw(0,0, "Change window size to proceed.");
