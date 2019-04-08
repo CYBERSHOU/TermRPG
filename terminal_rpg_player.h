@@ -19,7 +19,7 @@
 #define TERMINAL_RPG_PLAYER
 
 
-struct PLAYER {
+typedef struct PLAYER {
     char * name; //Max size of 18 char;
     int class_ [2];
     int race;
@@ -32,9 +32,14 @@ struct PLAYER {
     int cha;
     int hp;
     int armor;
-} player;
+} player_t;
 
-int set_win_player(struct PLAYER player, size_t size_x, size_t size_y, size_t pos_x, size_t pos_y);
+player_t *create_player(void);
+
+int set_struct_player(player_t player, char * name, int class_ [2], int race, int background);
+int set_struct_player_name(player_t * player, char * name);
+int set_struct_player_race(player_t * player, int race);
+int set_win_player(player_t * player, int size_x, int size_y, int pos_x, int pos_y);
 
 
 #endif /* ifndef TERMINAL_RPG_PLAYER */

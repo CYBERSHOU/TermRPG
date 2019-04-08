@@ -34,7 +34,7 @@ clean:
 
 debug: debug_make files
 	$(CC) $(CCF) $(FILE).o $(MENU).o $(START).o $(OPTIO).o $(WINSZ).o \
-	$(MUSIC).o $(DEBUG).o $(MAIN).c -o $(MAIN).exe
+	$(MUSIC).o $(PLAYE).o $(DEBUG).o $(MAIN).c -o $(MAIN).exe
 
 debug_make:
 	cd debug/ ; make

@@ -19,10 +19,12 @@
 #ifndef TERMINAL_RPG_START
 #define TERMINAL_RPG_START
 
-int start (void);
+#include "terminal_rpg_player.h"
 
-int new_game();
-int continue_game();
-int load_game();
+int start (void);
+int new_game(void);
+int continue_game(void);
+int load_game(void);
+int create_character(player_t * player);
 
 #endif /* ifndef TERMINAL_RPG_START */
