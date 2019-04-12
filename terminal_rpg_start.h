@@ -26,5 +26,7 @@ int new_game(void);
 int continue_game(void);
 int load_game(void);
 int create_character(player_t * player);
+int create_character_prompts(int row, int col, char * prompt, char * prompt2, char * prompt3, char buff[32]);
+
 
 #endif /* ifndef TERMINAL_RPG_START */

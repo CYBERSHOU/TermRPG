@@ -32,8 +32,8 @@
 /*     } */
 /* } */
 
-player_t *create_player(void) {
-    player_t *player = malloc(sizeof(player_t));
+player_t * create_player(void) {
+    player_t * player = malloc(sizeof(player_t));
     player->name = malloc(sizeof(char) * 20);
     return player;
 }
@@ -64,6 +64,7 @@ int set_win_player(player_t * player, int size_x, int size_y, int pos_x, int pos
     WINDOW * win_player = newwin(size_x, size_y, pos_x, pos_y);
     mvwprintw(win_player, 1, 1, "%s\n", player->name);
     box(win_player, 0, 0);
+    refresh();
     wrefresh(win_player);
     return 0;
 }

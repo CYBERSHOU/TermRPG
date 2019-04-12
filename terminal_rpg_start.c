@@ -25,6 +25,10 @@
 #include "terminal_rpg_player.h"
 
 
+//defines create_character_prompts
+#define CRTR "Character Creator"
+#define CRTR_NAME "Name your character.", "Name:"
+#define CRTR_RACE "Choose your character's race.", "Race:"
 
 
 const char * start_menu_msg [] =    {
@@ -68,8 +72,6 @@ int new_game() {
     int row, col;
     getmaxyx(stdscr, row, col);
     set_win_player(new_player, 10, 20, (row/4), (col/4) );
-    mvprintw(0,0, "%s\n", new_player->name);
-    getch();
     free(new_player);
     return 0;
 }
@@ -86,28 +88,113 @@ int load_game() {
 
 int create_character(player_t * player) {
     int row, col;
+    char buff[32];
     getmaxyx(stdscr, row, col);
-    clear();
 
-    const char * ng_new_character = "Character Creator";
-    mvprintw(row/4, (col - strlen(ng_new_character))/2, "%s", ng_new_character);
-    const char * name_char = "Name your character...";
-    mvprintw(row/4 + 3, (col - strlen(name_char))/2, "%s", name_char );
-    mvprintw(row/4 + 5, (col - 18)/2 - 5, "Name:");
-    refresh();
+    //Show a little info on the right side for each variable(name, race, strength, etc..);
+    //While on the left the characters current settings are shown.
+    int option = 1;
+    const char * ok[1];
+    while(1) {
+        option = menu_handling_expanded(10, 2, ok, option);
+        switch(option) {
+            case 1:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_NAME, buff);
+                for(int i = 0; i < 18; i++) player->name[i] = buff[i];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 2:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 3:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 4:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 5:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 6:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 7:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 8:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 9:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 10:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 11:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+            case 12:
+                clear();
+                create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+                player->race = buff[0];
+                set_win_player(player, 10, 20, row/4, col/4);
+                break;
+        }
+    }
+    /* clear(); */
+    /* create_character_prompts(row, col, CRTR, CRTR_NAME, buff); */
+    /* for(int i = 0; i < 18; i++) player->name[i] = buff[i]; */
+    /* set_win_player(player, 10, 20, row/4, col/4); */
+    //little menu for selecting what to change in the Character
+    create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
+    set_win_player(player, 10, 20, row/4, col/4);
+
+    return 0;
+}
+
+int create_character_prompts(int row, int col, char * prompt, char * prompt2, char * prompt3, char buff[32]) {
+    mvprintw(row/4, (col - strlen(prompt))/2, "%s", prompt);
+    mvprintw(row/4 + 3, (col - strlen(prompt2))/2, "%s", prompt2);
+    mvprintw(row/4 + 5, (col - 18)/2 - strlen(prompt3), prompt3);
     echo();
     curs_set(1);
     WINDOW * win_input = newwin(1, 18, row/4 + 5, (col - 18)/2 );
     wrefresh(win_input);
     refresh();
-    char buff [18] = "";
-    wscanw(win_input, "%s", buff);
+    wgetnstr(win_input, buff, 18);
     noecho();
     curs_set(0);
-    for(int i = 0; i < 18; i++) {
-        player->name[i] = buff[i];
-    }
-
     return 0;
 }
 
