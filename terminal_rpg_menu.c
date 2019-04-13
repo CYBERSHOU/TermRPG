@@ -82,6 +82,9 @@ int write_menu (int argc, const char * argv[], int highlight) {
 }
 
 int menu_handling_expanded (int argc, int argc_div, const char * argv[], int highlight) {
+    if(argc_div == 1)
+        return menu_handling(argc, argv, highlight);
+
     int c;
     while(1) {
         if(write_menu_expanded(argc, argc_div,  argv, highlight) == 1)
@@ -122,29 +125,42 @@ int menu_handling_expanded (int argc, int argc_div, const char * argv[], int hig
                 break;
         }
     }
-
     return -1;
 }
 
 int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highlight) {
     int row, col;
     getmaxyx(stdscr, row, col);
-    int dif = 1 + ((row / argc) / 2);
-    int row_menu = row * 0.25;
-    clear();
+    int row_menu_start = row * 0.25;
+    int col_menu_start = col * 0.25;
+    int row_menu = row * 0.55;
+    int col_menu = col * 0.5;
+    int row_title = row * 0.20;
+    int dif = 1 + (row_menu / (argc / argc_div));
 
+    clear();
     if( window_size_check(row, col, 25, 80) == 1)
         return 1;
 
     int word_length = 0;
     for(int i = 0; i < argc; i++) {
-        if( (strlen(argv[i]) % 2) != 0)
-            word_length = strlen(argv[i]) - 1;
-        else
+        if(strlen(argv[i]) > word_length)
             word_length = strlen(argv[i]);
-        if(highlight == i + 1) {
+    }
+    int max_div = col_menu / (word_length + 5);
+
+    if( max_div > argc_div)
+        return 1;
+
+    int div_remainder = col_menu % ((word_length + 5) * argc_div);
+    int i = 0;
+    int i_div = 0;
+    for(i; i < argc / argc_div; i++) {
+        if(i == 0)
+            mvprintw( row_title, col_menu - strlen(argv[i]), "%s", argv[i]);
+        if(highlight == i) {
             attron(A_REVERSE);
-            mvprintw( row_menu, (col - word_length) / 2, "%s <", argv[i] );
+            mvprintw( row_menu, (col / argc_div), "%s <", argv[i] );
             attroff(A_REVERSE);
         }
         else

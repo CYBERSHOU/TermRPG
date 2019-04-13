@@ -39,6 +39,16 @@ const char * start_menu_msg [] =    {
                                     };
 const int start_menu_size = 4;
 
+const char * character_variables [] =   {
+                                        CRTR,
+                                        "Name",
+                                        "Race",
+                                        "Class",
+                                        "Background",
+                                        "Return"
+                                        };
+const int character_variables_size = 5;
+
 
 int start () {
     int option = 1;
@@ -94,9 +104,8 @@ int create_character(player_t * player) {
     //Show a little info on the right side for each variable(name, race, strength, etc..);
     //While on the left the characters current settings are shown.
     int option = 1;
-    const char * ok[1];
     while(1) {
-        option = menu_handling_expanded(10, 2, ok, option);
+        option = menu_handling_expanded(character_variables_size, 2, character_variables, option);
         switch(option) {
             case 1:
                 clear();
