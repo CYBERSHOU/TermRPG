@@ -8,9 +8,10 @@ style, you can play directly from your terminal.
 
 - As new features are implemented this file will be updated.
 
-- At moment the game is still unplayable.
+- At moment the game is still unplayable, only 'New game' option in start is
+interactable.
 
-- All menu options but 'Start' are now fully interactable, but
+- All start menu options are now fully interactable, but
 'Controls' and 'Options' aren't fully completed (more options to had in the
 future).
 
