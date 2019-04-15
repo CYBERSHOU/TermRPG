@@ -169,7 +169,7 @@ int menu_handling_expanded (int argc, int argc_div, const char * argv[], int hig
 int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highlight) {
     int row, col;
     getmaxyx(stdscr, row, col);
-    int row_menu_start = row * 0.25;
+    int row_menu_start = row * 0.3;
     int col_menu_start = col * 0.25;
     int row_menu = row * 0.55;
     int col_menu = col * 0.5;
@@ -214,14 +214,14 @@ int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highl
             if(highlight == i) {
                 attron(A_REVERSE);
                 if(i == limit - 1)
-                    mvprintw( row_menu + row_menu_start, col_menu - (strlen(argv[i]) / 2), "%s", argv[i]);
+                    mvprintw( row_menu + row_menu_start, col_menu - (strlen(argv[i]) / 2), "%s <", argv[i]);
                 else
                     mvprintw( i_row_menu, i_col_menu + ((word_length + 5) * i_div), "%s <", argv[i] );
                 attroff(A_REVERSE);
             }
             else {
                 if(i == limit - 1)
-                    mvprintw( row_menu + row_menu_start, col_menu - (strlen(argv[i]) / 2), "%s", argv[i]);
+                    mvprintw( row_menu + row_menu_start, col_menu - (strlen(argv[i]) / 2), "%s  ", argv[i]);
                 else
                    mvprintw( i_row_menu, i_col_menu + ((word_length + 5) * i_div), "%s  ", argv[i] );
             }

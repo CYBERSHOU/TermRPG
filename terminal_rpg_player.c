@@ -21,20 +21,14 @@
 
 #include "terminal_rpg_player.h"
 
-
-/* int handle_player(void) { */
-/*     int x, y; */
-/*     getmaxyx(stdscr, y, x); */
-/*     set_win_player(player, x/2, y/2, x/4, y/4); */
-/*     while(1){ */
-/*         if (1) */
-/*             return 0; */
-/*     } */
-/* } */
+#define NAME "NAME:"
+#define RACE "RACE:"
+#define CLASS "CLASS:"
+#define BGROUND "BACKGROUND:"
 
 player_t * create_player(void) {
     player_t * player = malloc(sizeof(player_t));
-    player->name = malloc(sizeof(char) * 20);
+    player->name = malloc(sizeof(char) * 32);
     return player;
 }
 
@@ -62,7 +56,10 @@ int set_struct_player_race(player_t * player, int race) {
 
 int set_win_player(player_t * player, int size_x, int size_y, int pos_x, int pos_y) {
     WINDOW * win_player = newwin(size_x, size_y, pos_x, pos_y);
-    mvwprintw(win_player, 1, 1, "%s\n", player->name);
+    mvwprintw(win_player, 1, 1, "%s %s", NAME, player->name);
+    mvwprintw(win_player, 2, 1, "%s %d", RACE, player->race);
+    mvwprintw(win_player, 3, 1, "%s %d Level %d", CLASS, player->class_[0], player->class_[1]);
+    mvwprintw(win_player, 4, 1, "%s %d", BGROUND, player->background);
     box(win_player, 0, 0);
     refresh();
     wrefresh(win_player);
