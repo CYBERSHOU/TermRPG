@@ -40,14 +40,14 @@ const char * start_menu_msg [] =    {
 const int start_menu_size = 4;
 
 const char * character_variables [] =   {
-                                        CRTR,
+                                        "Character Creator",
                                         "Name",
                                         "Race",
                                         "Class",
                                         "Background",
                                         "Return"
                                         };
-const int character_variables_size = 5;
+const int character_variables_size = 6;
 
 
 int start () {
@@ -100,24 +100,35 @@ int create_character(player_t * player) {
     int row, col;
     char buff[32];
     getmaxyx(stdscr, row, col);
-
+    clear();
     //Show a little info on the right side for each variable(name, race, strength, etc..);
     //While on the left the characters current settings are shown.
     int option = 1;
     while(1) {
+        if(option == -2)
+            option = 1;
+        set_win_player(player, 10, 20, row/4, col/4);
         option = menu_handling_expanded(character_variables_size, 2, character_variables, option);
+        if(character_variables_size == option + 1)
+            return 0;
         switch(option) {
+            case -2:
+                mvprintw(0,0, "Change window size to proceed.");
+                getch();
+                break;
             case 1:
                 clear();
+                set_win_player(player, 10, 20, row/4, col/4);
                 create_character_prompts(row, col, CRTR, CRTR_NAME, buff);
                 for(int i = 0; i < 18; i++) player->name[i] = buff[i];
-                set_win_player(player, 10, 20, row/4, col/4);
+                clear();
                 break;
             case 2:
                 clear();
+                set_win_player(player, 10, 20, row/4, col/4);
                 create_character_prompts(row, col, CRTR, CRTR_RACE, buff);
                 player->race = buff[0];
-                set_win_player(player, 10, 20, row/4, col/4);
+                clear();
                 break;
             case 3:
                 clear();

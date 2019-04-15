@@ -85,40 +85,78 @@ int menu_handling_expanded (int argc, int argc_div, const char * argv[], int hig
     if(argc_div == 1)
         return menu_handling(argc, argv, highlight);
 
-    int c;
+    int c = 0;
+    int opt_argc = argc - 2;
+    int prev_hl = highlight;
     while(1) {
         if(write_menu_expanded(argc, argc_div,  argv, highlight) == 1)
             return -2;
+        refresh();
         c = getch();
         switch(c) {
             case KEY_UP:
-                if(highlight == 1)
-                    highlight = argc / argc_div;
-                if(highlight == (argc / argc_div) + 1)
-                    highlight = argc;
-                else
+                if(highlight == argc - 1) {
+                    highlight = prev_hl;
+                    prev_hl = highlight;
+                    break;
+                }
+                if(highlight == 1) {
+                    prev_hl = highlight;
+                    highlight = argc - 1;
+                    break;
+                }
+                if(highlight == (opt_argc / argc_div) + 1) {
+                    prev_hl = highlight;
+                    highlight = argc - 1;
+                    break;
+                }
+                else {
+                    prev_hl = highlight;
                     highlight--;
-                break;
+                    break;
+                }
             case KEY_DOWN:
-                if(highlight == argc)
-                    highlight = (argc / argc_div) + 1;
-                if(highlight == argc / argc_div)
-                    highlight = 1;
-                else
+                if(highlight == argc - 1) {
+                    highlight = prev_hl;
+                    prev_hl = highlight;
+                    break;
+                }
+                if(highlight == opt_argc / argc_div) {
+                    prev_hl = highlight;
+                    highlight = argc - 1;
+                    break;
+                }
+                else {
+                    prev_hl = highlight;
                     highlight++;
-                break;
+                    break;
+                }
             case KEY_LEFT:
-                if(highlight < argc / argc_div)
-                    highlight += (argc / argc_div) * (argc_div - 1);
-                else
-                    highlight -= argc / argc_div;
-                break;
+                if(highlight == argc - 1)
+                    break;
+                if(highlight < opt_argc / argc_div) {
+                    prev_hl = highlight;
+                    highlight += (opt_argc / argc_div) * (argc_div - 1);
+                    break;
+                }
+                else {
+                    prev_hl = highlight;
+                    highlight -= opt_argc / argc_div;
+                    break;
+                }
             case KEY_RIGHT:
-                if(highlight > (argc / 2) )
-                    highlight -= (argc / argc_div) * (argc_div - 1);
-                else
-                    highlight += argc / argc_div;
-                break;
+                if(highlight == argc - 1)
+                    break;
+                if(highlight > (opt_argc / argc_div) ) {
+                    prev_hl = highlight;
+                    highlight -= (opt_argc / argc_div) * (argc_div - 1);
+                    break;
+                }
+                else {
+                    prev_hl = highlight;
+                    highlight += opt_argc / argc_div;
+                    break;
+                }
             case 10:
                 return highlight;
             default:
@@ -136,9 +174,8 @@ int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highl
     int row_menu = row * 0.55;
     int col_menu = col * 0.5;
     int row_title = row * 0.20;
-    int dif = 1 + (row_menu / (argc / argc_div));
+    int dif = 2;
 
-    clear();
     if( window_size_check(row, col, 25, 80) == 1)
         return 1;
 
@@ -147,27 +184,52 @@ int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highl
         if(strlen(argv[i]) > word_length)
             word_length = strlen(argv[i]);
     }
-    int max_div = col_menu / (word_length + 5);
 
-    if( max_div > argc_div)
+    int max_div = col_menu / (word_length + 5);
+    if( max_div < argc_div)
         return 1;
 
-    int div_remainder = col_menu % ((word_length + 5) * argc_div);
-    int i = 0;
-    int i_div = 0;
-    for(i; i < argc / argc_div; i++) {
-        if(i == 0)
-            mvprintw( row_title, col_menu - strlen(argv[i]), "%s", argv[i]);
+    /* int div_remainder = col_menu % ((word_length + 5) * argc_div); */
+    mvprintw( row_title, col_menu - (strlen(argv[0]) / 2), "%s", argv[0]);
+    int i_pos = 1;
+    int i_div = 1;
+    int i_row_menu = row_menu_start;
+    int i_col_menu = col_menu_start + ((col_menu / argc_div) * 0.7 );
+    int limit = argc / argc_div;
+    for(int i = i_pos; i < limit; i++) {
         if(highlight == i) {
             attron(A_REVERSE);
-            mvprintw( row_menu, (col / argc_div), "%s <", argv[i] );
+            mvprintw( i_row_menu, i_col_menu, "%s <", argv[i] );
             attroff(A_REVERSE);
         }
         else
-            mvprintw( row_menu, (col - word_length) / 2, "%s", argv[i] );
-        row_menu += dif;
+            mvprintw( i_row_menu, i_col_menu, "%s  ", argv[i] );
+        i_row_menu += dif;
+        i_pos++;
     }
-
+    while(i_div < argc_div) {
+        limit += argc / argc_div;
+        i_row_menu = row_menu_start;
+        for(int i = i_pos; i < limit; i++) {
+            if(highlight == i) {
+                attron(A_REVERSE);
+                if(i == limit - 1)
+                    mvprintw( row_menu + row_menu_start, col_menu - (strlen(argv[i]) / 2), "%s", argv[i]);
+                else
+                    mvprintw( i_row_menu, i_col_menu + ((word_length + 5) * i_div), "%s <", argv[i] );
+                attroff(A_REVERSE);
+            }
+            else {
+                if(i == limit - 1)
+                    mvprintw( row_menu + row_menu_start, col_menu - (strlen(argv[i]) / 2), "%s", argv[i]);
+                else
+                   mvprintw( i_row_menu, i_col_menu + ((word_length + 5) * i_div), "%s  ", argv[i] );
+            }
+            i_row_menu += dif;
+            i_pos++;
+        }
+        i_div++;
+    }
     return 0;
 }
 
