@@ -29,12 +29,45 @@
 //defines create_character_prompts
 #define CRTR "Character Creator"
 #define CRTR_NAME "Name your character.", "Name:"
-#define CRTR_RACE "Choose your character's race.", "Race:"
-#define CRTR_CLASS "Choose your character's class.", "Class:"
-#define CRTR_BGROUND "Choose your character's background.", "Background:"
+#define CRTR_RACE "Choose your character's race."
+#define CRTR_CLASS "Choose your character's class."
+#define CRTR_BGROUND "Choose your character's background."
 
 //Error
 #define ERROR_1 "Insert Only Numbers!!"
+
+const char * races [] = {
+                        CRTR_RACE,
+                        "Human",
+                        "Orc",
+                        "Nordener",
+                        "Frog",
+                        "Return"
+                        };
+const int races_size = 6;
+
+const char * classes [] =   {
+                            CRTR_CLASS,
+                            "Knight",
+                            "Assasin",
+                            "Ranger",
+                            "Mage",
+                            "Bard",
+                            "Return"
+                            };
+const int classes_size = 7;
+
+const char * backgrounds [] =   {
+                                CRTR_BGROUND,
+                                "Commoner",
+                                "Noble",
+                                "Burgeoise",
+                                "Religious",
+                                "Criminal",
+                                "Return"
+                                };
+const int backgrounds_size = 7;
+
 
 const char * start_menu_msg [] =    {
                                     "New Game",
@@ -118,43 +151,22 @@ int create_character(player_t * player) {
                 window_size_check(row, col, 25, 80);
                 break;
             case 1:
-                /* clear(); */
                 set_win_player(player, 10, 26, row/4, (col/4) - 13);
-                create_character_prompts(row, col, CRTR_NAME, buff, 1);
+                create_character_prompts(row, col, CRTR_NAME, buff);
                 for(int i = 0; i < 18; i++) player->name[i] = buff[i];
-                /* clear(); */
                 break;
             case 2:
-                /* clear(); */
                 set_win_player(player, 10, 26, row/4, (col/4) - 13);
-                create_character_prompts(row, col, CRTR_RACE, buff, 0);
-                if(buff[0] < 48 || buff[0] > 58)
-                    mvprintw(0,0, ERROR_1);
-                else
-                    player->race = (buff[0] - 48);
-                /* clear(); */
+                player->race = create_character_select_menu(row, col, CRTR_RACE, races, races_size);
                 break;
             case 3:
-                /* clear(); */
                 set_win_player(player, 10, 26, row/4, (col/4) - 13);
-                create_character_prompts(row, col, CRTR_CLASS, buff, 0);
-                if(buff[0] < 48 || buff[0] > 58)
-                    mvprintw(0,0, ERROR_1);
-                else {
-                    player->class_[0] = (buff[0] - 48);
-                    player->class_[1] = 1;
-                }
-                /* clear(); */
+                player->class_[0] = create_character_select_menu(row, col, CRTR_CLASS, classes, classes_size);
+                player->class_[1] = 1;
                 break;
             case 4:
-                /* clear(); */
                 set_win_player(player, 10, 26, row/4, (col/4) - 13);
-                create_character_prompts(row, col, CRTR_BGROUND, buff, 0);
-                if(buff[0] < 48 || buff[0] > 58)
-                    mvprintw(0,0, ERROR_1);
-                else
-                    player->background = (buff[0] - 48);
-                /* clear(); */
+                player->background = create_character_select_menu(row, col, CRTR_BGROUND, backgrounds, backgrounds_size);
                 break;
             case 5:
                 return 0;
@@ -163,14 +175,11 @@ int create_character(player_t * player) {
     return 0;
 }
 
-int create_character_prompts(int row, int col, char * prompt, char * prompt2, char buff[32], int case_) {
+int create_character_prompts(int row, int col, char * prompt, char * prompt2, char buff[32]) {
     int prompt_row = 10;
     int prompt_col = 40;
     int prompt2_col_pos;
-    if(case_)
-        prompt2_col_pos = (prompt_col - 19 - strlen(prompt2)) / 2;
-    else
-        prompt2_col_pos = (prompt_col / 2) - 2 - strlen(prompt2);
+    prompt2_col_pos = (prompt_col - 19 - strlen(prompt2)) / 2;
 
     WINDOW * win_prompt = newwin(prompt_row, prompt_col, (row * 0.4) - (prompt_row / 2), (col * 0.5) - (prompt_col / 2));
     mvwprintw(win_prompt, prompt_row * 0.2, (prompt_col / 2) - (strlen(prompt)/2), prompt);
@@ -179,10 +188,7 @@ int create_character_prompts(int row, int col, char * prompt, char * prompt2, ch
     wrefresh(win_prompt);
     echo();
     curs_set(1);
-    if(case_)
-        wgetnstr(win_prompt, buff, 18);
-    else
-        wgetnstr(win_prompt, buff, 1);
+    wgetnstr(win_prompt, buff, 18);
     noecho();
     curs_set(0);
     wclear(win_prompt);
@@ -190,6 +196,23 @@ int create_character_prompts(int row, int col, char * prompt, char * prompt2, ch
     delwin(win_prompt);
     refresh();
     return 0;
+}
+
+int create_character_select_menu(int row, int col, char * prompt, const char * selection[], const int selection_size) {
+    int prompt_row = 15;
+    int prompt_col = 60;
+
+    WINDOW * win_prompt = newwin(prompt_row, prompt_col, (row * 0.4) - (prompt_row / 2), (col * 0.5) - (prompt_col / 2));
+    /* mvwprintw(win_prompt, prompt_row * 0.2, (prompt_col / 2) - (strlen(prompt)/2), prompt); */
+    box(win_prompt, 0,0);
+    /* wrefresh(win_prompt); */
+    int option = 1;
+    option = w_menu_handling_expanded(win_prompt, selection_size, 2, selection, option);
+    wclear(win_prompt);
+    wrefresh(win_prompt);
+    delwin(win_prompt);
+    refresh();
+    return option;
 }
 
 

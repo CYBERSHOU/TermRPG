@@ -25,4 +25,10 @@ int write_menu (int argc, const char * argv[], int highlight);
 int menu_handling_expanded (int argc, int argc_div, const char * argv[], int highlight);
 int write_menu_expanded (int argc, int argc_div, const char * argv[], int highlight);
 
+int w_menu_handling (WINDOW * win, int argc, const char * argv[], int highlight);
+int w_write_menu (WINDOW * win, int argc, const char * argv[], int highlight);
+int w_menu_handling_expanded (WINDOW * win, int argc, int argc_div, const char * argv[], int highlight);
+int w_write_menu_expanded (WINDOW * win, int argc, int argc_div, const char * argv[], int highlight);
+
+
 #endif /* ifndef TERMINAL_RPG_MENU */
