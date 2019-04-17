@@ -42,9 +42,10 @@ const char * races [] = {
                         "Orc",
                         "Nordener",
                         "Frog",
+                        "OK",
                         "Return"
                         };
-const int races_size = 6;
+const int races_size = 7;
 
 const char * classes [] =   {
                             CRTR_CLASS,
@@ -203,9 +204,7 @@ int create_character_select_menu(int row, int col, char * prompt, const char * s
     int prompt_col = 60;
 
     WINDOW * win_prompt = newwin(prompt_row, prompt_col, (row * 0.4) - (prompt_row / 2), (col * 0.5) - (prompt_col / 2));
-    /* mvwprintw(win_prompt, prompt_row * 0.2, (prompt_col / 2) - (strlen(prompt)/2), prompt); */
     box(win_prompt, 0,0);
-    /* wrefresh(win_prompt); */
     int option = 1;
     option = w_menu_handling_expanded(win_prompt, selection_size, 2, selection, option);
     wclear(win_prompt);

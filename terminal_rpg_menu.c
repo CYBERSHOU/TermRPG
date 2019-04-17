@@ -180,7 +180,7 @@ int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highl
         return 1;
 
     int word_length = 0;
-    for(int i = 0; i < argc; i++) {
+    for(int i = 1; i < argc; i++) {
         if(strlen(argv[i]) > word_length)
             word_length = strlen(argv[i]);
     }
@@ -189,14 +189,16 @@ int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highl
     if( max_div < argc_div)
         return 1;
 
-    /* int div_remainder = col_menu % ((word_length + 5) * argc_div); */
     mvprintw( row_title, col_menu - (strlen(argv[0]) / 2), "%s", argv[0]);
     int i_pos = 1;
     int i_div = 1;
     int i_row_menu = row_menu_start;
-    int i_col_menu = col_menu_start + ((col_menu / argc_div) * 0.7 );
+    int i_col_menu = col_menu_start + ((col_menu / argc_div) - (word_length) + 3);
     int limit = argc / argc_div;
+    word_length = 0;
     for(int i = i_pos; i < limit; i++) {
+        if(strlen(argv[i]) > word_length)
+            word_length = strlen(argv[i]);
         if(highlight == i) {
             attron(A_REVERSE);
             mvprintw( i_row_menu, i_col_menu, "%s <", argv[i] );
@@ -210,6 +212,7 @@ int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highl
     while(i_div < argc_div) {
         limit += argc / argc_div;
         i_row_menu = row_menu_start;
+        int i_word_length = 0;
         for(int i = i_pos; i < limit; i++) {
             if(highlight == i) {
                 attron(A_REVERSE);
@@ -227,7 +230,10 @@ int write_menu_expanded (int argc, int argc_div,  const char * argv[], int highl
             }
             i_row_menu += dif;
             i_pos++;
+            if(i_word_length < strlen(argv[i]))
+                i_word_length = strlen(argv[i]);
         }
+        word_length = i_word_length;
         i_div++;
     }
     return 0;
@@ -300,6 +306,8 @@ int w_menu_handling_expanded (WINDOW * win, int argc, int argc_div, const char *
 
     int c = 0;
     int opt_argc = argc - 2;
+    int opt_argc_div = opt_argc / argc_div;
+    int opt_argc_exc = opt_argc % argc_div;
     int prev_hl = highlight;
     while(1) {
         if(w_write_menu_expanded(win, argc, argc_div,  argv, highlight) == 1)
@@ -308,68 +316,25 @@ int w_menu_handling_expanded (WINDOW * win, int argc, int argc_div, const char *
         c = getch();
         switch(c) {
             case KEY_UP:
-                if(highlight == argc - 1) {
-                    highlight = prev_hl;
+                if(highlight != opt_argc + 1)
                     prev_hl = highlight;
-                    break;
-                }
-                if(highlight == 1) {
-                    prev_hl = highlight;
-                    highlight = argc - 1;
-                    break;
-                }
-                if(highlight == (opt_argc / argc_div) + 1) {
-                    prev_hl = highlight;
-                    highlight = argc - 1;
-                    break;
-                }
-                else {
-                    prev_hl = highlight;
-                    highlight--;
-                    break;
-                }
+                highlight = w_menu_handling_expanded_KEY_UP(opt_argc, opt_argc_div, opt_argc_exc, prev_hl, highlight);
+                break;
             case KEY_DOWN:
-                if(highlight == argc - 1) {
-                    highlight = prev_hl;
+                if(highlight != opt_argc + 1)
                     prev_hl = highlight;
-                    break;
-                }
-                if(highlight == opt_argc / argc_div) {
-                    prev_hl = highlight;
-                    highlight = argc - 1;
-                    break;
-                }
-                else {
-                    prev_hl = highlight;
-                    highlight++;
-                    break;
-                }
+                highlight = w_menu_handling_expanded_KEY_DOWN(opt_argc, opt_argc_div, opt_argc_exc, prev_hl, highlight);
+                break;
             case KEY_LEFT:
-                if(highlight == argc - 1)
-                    break;
-                if(highlight < opt_argc / argc_div) {
+                if(highlight != opt_argc + 1)
                     prev_hl = highlight;
-                    highlight += (opt_argc / argc_div) * (argc_div - 1);
-                    break;
-                }
-                else {
-                    prev_hl = highlight;
-                    highlight -= opt_argc / argc_div;
-                    break;
-                }
+                highlight = w_menu_handling_expanded_KEY_LEFT(opt_argc, opt_argc_div, opt_argc_exc, highlight);
+                break;
             case KEY_RIGHT:
-                if(highlight == argc - 1)
-                    break;
-                if(highlight > (opt_argc / argc_div) ) {
+                if(highlight != opt_argc + 1)
                     prev_hl = highlight;
-                    highlight -= (opt_argc / argc_div) * (argc_div - 1);
-                    break;
-                }
-                else {
-                    prev_hl = highlight;
-                    highlight += opt_argc / argc_div;
-                    break;
-                }
+                highlight = w_menu_handling_expanded_KEY_RIGHT(opt_argc, opt_argc_div, opt_argc_exc, highlight);
+                break;
             case 10:
                 return highlight;
             default:
@@ -389,7 +354,7 @@ int w_write_menu_expanded (WINDOW * win, int argc, int argc_div,  const char * a
     int col_menu_start = col * 0.25;
     int row_menu = row * 0.55;
     int col_menu = col * 0.5;
-    int row_title = row * 0.20;
+    int row_title = row * 0.15;
     int dif = 2;
 
     int word_length = 0;
@@ -402,14 +367,18 @@ int w_write_menu_expanded (WINDOW * win, int argc, int argc_div,  const char * a
     if( max_div < argc_div)
         return 1;
 
-    /* int div_remainder = col_menu % ((word_length + 5) * argc_div); */
     mvwprintw(win, row_title, col_menu - (strlen(argv[0]) / 2), "%s", argv[0]);
     int i_pos = 1;
     int i_div = 1;
     int i_row_menu = row_menu_start;
-    int i_col_menu = col_menu_start + ((col_menu / argc_div) * 0.7 );
+    int i_col_menu = col_menu_start + ((col_menu / argc_div) * 0.25 );
     int limit = argc / argc_div;
+    if( (argc % argc_div) != 0)
+        limit += argc % argc_div;
+    word_length = 0;
     for(int i = i_pos; i < limit; i++) {
+        if(word_length < strlen(argv[i]))
+            word_length = strlen(argv[i]);
         if(highlight == i) {
             wattron(win, A_REVERSE);
             mvwprintw(win, i_row_menu, i_col_menu, "%s <", argv[i] );
@@ -444,6 +413,88 @@ int w_write_menu_expanded (WINDOW * win, int argc, int argc_div,  const char * a
         i_div++;
     }
     return 0;
+}
+
+int w_menu_handling_expanded_KEY_UP(int opt_argc, int opt_argc_div, int opt_argc_exc, int prev_hl, int highlight) {
+    if(highlight == opt_argc + 1)
+        return prev_hl;
+    if(highlight > (opt_argc_div + 1) * opt_argc_exc) {
+        int i_hl = 0;
+        for(i_hl = highlight - opt_argc_exc; i_hl > 1; i_hl -= opt_argc_div);
+        if(i_hl == 1)
+            return highlight = opt_argc + 1;
+        else
+            return highlight -= 1;
+    }
+    else {
+        int i_hl = 0;
+        for(i_hl = highlight; i_hl > 1; i_hl -= (opt_argc_div + 1));
+        if(i_hl == 1)
+            return highlight = opt_argc + 1;
+        else
+            return highlight -= 1;
+    }
+}
+
+int w_menu_handling_expanded_KEY_DOWN(int opt_argc, int opt_argc_div, int opt_argc_exc, int prev_hl, int highlight) {
+    if(highlight == opt_argc + 1)
+        return 1;
+    if(highlight > (opt_argc_div + 1) * opt_argc_exc) {
+        int i_hl = 0;
+        for(i_hl = highlight - opt_argc_exc; i_hl > 1; i_hl -= opt_argc_div);
+        if(i_hl == 0)
+            return highlight = opt_argc + 1;
+        else
+            return highlight += 1;
+    }
+    else {
+        int i_hl = 0;
+        for(i_hl = highlight; i_hl > 1; i_hl -= (opt_argc_div + 1));
+        if(i_hl == 0)
+            return highlight = opt_argc + 1;
+        else
+            return highlight += 1;
+    }
+}
+
+int w_menu_handling_expanded_KEY_LEFT(int opt_argc, int opt_argc_div, int opt_argc_exc, int highlight) {
+    if(highlight == opt_argc + 1)
+        return highlight;
+    if(highlight > (opt_argc_div + 1) * opt_argc_exc) {
+        if(highlight - opt_argc_div <= 0)
+            return highlight += opt_argc_exc + (opt_argc_div * ((opt_argc / opt_argc_div) - 1));
+        if(highlight - opt_argc_div <= (opt_argc_div + 1) * opt_argc_exc)
+            return highlight -= opt_argc_div + 1;
+        else
+            return highlight -= opt_argc_div;
+    }
+    else {
+        if(highlight - opt_argc_div <= 0)
+            return highlight += opt_argc_exc + (opt_argc_div * ((opt_argc / opt_argc_div) - 1));
+        if(highlight - (opt_argc_div + 1) == 0)
+            return highlight += (opt_argc_exc - 1) * (opt_argc_div + 1);
+        else
+            return highlight -= opt_argc_div + 1;
+    }
+}
+
+int w_menu_handling_expanded_KEY_RIGHT(int opt_argc, int opt_argc_div, int opt_argc_exc, int highlight) {
+    if(highlight == opt_argc + 1)
+        return highlight;
+    if(highlight > (opt_argc_div + 1) * opt_argc_exc) {
+        if(highlight + opt_argc_div > opt_argc)
+            return highlight -= opt_argc_exc + (opt_argc_div * ((opt_argc / opt_argc_div) - 1));
+        else
+            return highlight += opt_argc_div;
+    }
+    else {
+        int i_hl = 0;
+        for(i_hl = highlight; i_hl > 1; i_hl -= opt_argc_div + 1);
+        if( (i_hl == 0) && ((highlight + opt_argc_div + 1) > (opt_argc_div + 1) * opt_argc_exc) )
+            return highlight -= (opt_argc_exc - 1) * (opt_argc_div + 1);
+        else
+            return highlight += opt_argc_div + 1;
+    }
 }
 
 
