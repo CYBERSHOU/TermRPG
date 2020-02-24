@@ -30,10 +30,12 @@ const char * audio_tracks = "audio_tracks/*.mp3";
 const char * log_file = "audio_tracks/log.txt";
 
 //Using mkfifo to create a file onto which to echo commands to mplayer;
-const char * mkfifo = "mkfifo %s &> %s"; //First (%s) is 'fifo' and second is 'log_file';
+//First (%s) is 'fifo' and second is 'log_file';
+const char * mkfifo = "mkfifo %s &> %s";
 //First (%s) is 'fifo', then (%d) is '(music_volume * 10)', the last two (%s) are 'audio_tracks' and 'log_file';
 const char * mplayer = "mplayer -slave -input file=%s -softvol -volstep 10 -volume %d -loop 0 %s &>> %s &";
-const char * volume_dec = "echo 'volume -1 0' >> %s"; //(%s) is 'fifo' for each.
+//(%s) is 'fifo' for each.
+const char * volume_dec = "echo 'volume -1 0' >> %s";
 const char * volume_inc = "echo 'volume 1 0' >> %s";
 const char * quit_mplayer = "echo 'quit 0' >> %s";
 

@@ -20,14 +20,14 @@
 #define TERMINAL_RPG_MUSIC
 
 
-void music_inc_music_volume (void);
-void music_dec_music_volume (void);
+void music_inc_music_volume(void);
+void music_dec_music_volume(void);
 
-int music_set_mplayer (void);
-int music_quit_mplayer (void);
-int music_write_m_volume (const char * filename);
-int music_read_m_volume (const char * filename);
-int music_return_music_volume (void);
+int music_set_mplayer(void);
+int music_quit_mplayer(void);
+int music_write_m_volume(const char * filename);
+int music_read_m_volume(const char * filename);
+int music_return_music_volume(void);
 
 
 #endif /* ifndef TERMINAL_RPG_MUSIC */

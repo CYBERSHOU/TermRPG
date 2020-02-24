@@ -142,6 +142,7 @@ int create_character(player_t * player) {
     clear();
     //Show a little info on the right side for each variable(name, race, strength, etc..);
     int option = 1;
+    int selected = 0;
     while(1) {
         if(option == -2)
             option = 1;
@@ -158,16 +159,29 @@ int create_character(player_t * player) {
                 break;
             case 2:
                 set_win_player(player, 10, 26, row/4, (col/4) - 13);
-                player->race = create_character_select_menu(row, col, CRTR_RACE, races, races_size);
+                selected = create_character_select_menu(row, col, CRTR_RACE, races, races_size);
+                if(selected == races_size - 1)
+                    break;
+                else
+                    player->race = selected;
                 break;
             case 3:
                 set_win_player(player, 10, 26, row/4, (col/4) - 13);
-                player->class_[0] = create_character_select_menu(row, col, CRTR_CLASS, classes, classes_size);
-                player->class_[1] = 1;
+                selected = create_character_select_menu(row, col, CRTR_CLASS, classes, classes_size);
+                if(selected == classes_size - 1)
+                    break;
+                else {
+                    player->class_[0] = selected;
+                    player->class_[1] = 1;
+                }
                 break;
             case 4:
                 set_win_player(player, 10, 26, row/4, (col/4) - 13);
-                player->background = create_character_select_menu(row, col, CRTR_BGROUND, backgrounds, backgrounds_size);
+                selected = create_character_select_menu(row, col, CRTR_BGROUND, backgrounds, backgrounds_size);
+                if(selected == backgrounds_size - 1)
+                    break;
+                else
+                    player->background = selected;
                 break;
             case 5:
                 return 0;

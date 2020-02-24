@@ -19,5 +19,6 @@
 #define TERMINAL_RPG_WINDOW_SIZE
 
 int window_size_check(int row, int col, int min_row, int min_col);
+int window_size_change_check(int row, int col);
 
 #endif /* ifndef TERMINAL_RPG_WINDOW_SIZE */

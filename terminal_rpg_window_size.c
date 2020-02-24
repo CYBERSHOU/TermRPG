@@ -32,5 +32,13 @@ int window_size_check(int row, int col, int min_row, int min_col) {
     return 0;
 }
 
+int window_size_change_check(int row, int col) {
+    int current_row, current_col;
+    getmaxyx(stdscr, current_row, current_col);
+    if(current_row != row || current_col != col)
+        return 1;
+    return 0;
+}
+
 
 //eof

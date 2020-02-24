@@ -278,7 +278,6 @@ int w_write_menu (WINDOW * win, int argc, const char * argv[], int highlight) {
     getmaxyx(win, row, col);
     int dif = 1 + ((row / argc) / 2);
     int row_menu = row * 0.25;
-    /* wclear(win); */
 
 
     int word_length = 0;
@@ -304,14 +303,38 @@ int w_menu_handling_expanded (WINDOW * win, int argc, int argc_div, const char *
     if(argc_div == 1)
         return menu_handling(argc, argv, highlight);
 
+    int row, col;
+    getmaxyx(stdscr, row, col);
     int c = 0;
     int opt_argc = argc - 2;
     int opt_argc_div = opt_argc / argc_div;
     int opt_argc_exc = opt_argc % argc_div;
     int prev_hl = highlight;
+    const char * scr_h_m_expanded = "scr_h_m_expanded";
+    scr_dump(scr_h_m_expanded);
+    FILE * win_h_m_prompt = fopen("win_h_m_prompt", "wb+");
+    putwin(win, win_h_m_prompt);
+    fclose(win_h_m_prompt);
     while(1) {
+        if(window_size_change_check(row, col)) {
+            while(window_size_change_check(row, col) != 0) {
+                clear();
+                mvprintw(0,0, "Return to previous window size or fullscreen!!");
+                refresh();
+                getch();
+            }
+            clear();
+            scr_set(scr_h_m_expanded);
+            doupdate();
+            getwin(win_h_m_prompt);
+            doupdate();
+            wrefresh(win);
+            /* return -2; */
+        }
         if(w_write_menu_expanded(win, argc, argc_div,  argv, highlight) == 1)
             return -2;
+        /* scr_dump(scr_h_m_expanded); */
+        box(win, 0, 0);
         wrefresh(win);
         c = getch();
         switch(c) {
