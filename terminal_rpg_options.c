@@ -46,8 +46,8 @@ char * options_music_volume [] =  {
                                 "<",
                                 " ",
                                 "[",
-                                "!", // 10 of these for 100% / music_volume = 10; [2]
-                                ".", // or 10 of these for 0% / music_volume = 0; [3]
+                                "!", // 10 of these for 100% / music_volume = 10; [3]
+                                ".", // or 10 of these for 0% / music_volume = 0; [4]
                                 "]",
                                 " ",
                                 ">"
@@ -263,16 +263,17 @@ int options_write_music_volume (const int highlight, int row, int col) {
 
 int quit () {
     int highlight = quit_handling(0);
-    if( highlight == 0)
+    if(highlight == 0)
         return 0;
-    if( highlight == 1)
+    if(highlight == 1)
         return 1;
-    if( highlight == -1)
+    if(highlight == -1) {
         clear();
-        int row, col;
-        getmaxyx(stdscr, row, col);
-        mvprintw(row /2, (col - strlen(error_msg)) / 2, "%s", error_msg);
-        return -1;
+    	int row, col;
+    	getmaxyx(stdscr, row, col);
+    	mvprintw(row /2, (col - strlen(error_msg)) / 2, "%s", error_msg);
+    }
+    return -1;
 }
 
 int quit_handling (int highlight) {
@@ -309,11 +310,11 @@ int quit_write (const int highlight) {
     mvprintw(row / 2 - 1, (col - strlen(quit_msg)) / 2, "%s", quit_msg);
     if(highlight == 0) {
         attron(A_REVERSE);
-        mvprintw( (row / 2) + 1, (col - 8) / 2, "%s", quit_choice[0], quit_choice[0]);
+        mvprintw( (row / 2) + 1, (col - 8) / 2, "%s", quit_choice[0]);
         attroff(A_REVERSE);
         printw("   %s", quit_choice[1]);
     } else {
-        mvprintw( (row / 2) + 1, (col - 8) / 2, "%s   ", quit_choice[0], quit_choice[0]);
+        mvprintw( (row / 2) + 1, (col - 8) / 2, "%s", quit_choice[0]);
         attron(A_REVERSE);
         printw("%s", quit_choice[1]);
         attroff(A_REVERSE);
