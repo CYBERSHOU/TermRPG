@@ -12,7 +12,7 @@ style, you can play directly from your terminal.
 interactable.
 
 - All start menu options are now fully interactable, but
-'Controls' and 'Options' aren't fully completed (more options to had in the
+'Controls' and 'Options' aren't fully completed (more options to add in the
 future).
 
 - Background music added through the mplayer program and is working as desired
